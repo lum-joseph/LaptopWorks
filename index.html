@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LaptopWorks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      background: #fff;
+      color: #000;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 0;
+      padding: 32px 0 10px 0;
+      justify-content: center;
+      position: relative;
+    }
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      border: 2px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.1em;
+      font-weight: bold;
+      background: #fff;
+      color: #000;
+      margin-right: 4px;
+    }
+    .app-name {
+      font-size: 2.15em;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    .instructions {
+      margin: 0 auto 28px auto;
+      text-align: center;
+      font-size: 1.04em;
+      max-width: 580px;
+      color: #333;
+      opacity: 0.85;
+    }
+    .tiles-row {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin: 0 0 0 0;
+      flex-wrap: wrap;
+    }
+    .tile-card {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 13px;
+      box-shadow: 0 2px 8px #0002;
+      width: 165px;
+      min-height: 198px;
+      padding: 13px 10px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      margin-bottom: 16px;
+      align-items: stretch;
+    }
+    .tile-subtitle {
+      font-size: 0.93em;
+      color: #666;
+      margin-bottom: 0;
+      opacity: 0.65;
+    }
+    .tile-title {
+      font-size: 1.02em;
+      font-weight: bold;
+      margin-bottom: 6px;
+      margin-top: 2px;
+    }
+    .tile-info {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 19px;
+      height: 19px;
+      border: 1.3px solid #000;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #fff;
+      line-height: 17px;
+      opacity: 0.72;
+      z-index: 2;
+    }
+    .files-list {
+      margin: 0 0 7px 0;
+      padding: 0;
+      list-style: none;
+      max-height: 46px;
+      overflow-y: auto;
+      font-size: 0.97em;
+    }
+    .files-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+    .files-list .del-btn {
+      margin-right: 6px;
+      color: #000;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .upload-area {
+      border: 1.7px dashed #000;
+      border-radius: 10px;
+      padding: 8px 0;
+      text-align: center;
+      background: #fafafa;
+      cursor: pointer;
+      font-size: 0.98em;
+      margin-bottom: 0;
+      margin-top: 4px;
+      transition: background 0.1s;
+    }
+    .upload-area.dragover {
+      background: #efefef;
+    }
+    .submit-btn {
+      margin: 32px auto 0 auto;
+      display: block;
+      padding: 12px 40px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1.07em;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: background 0.13s, color 0.13s;
+    }
+    .submit-btn:hover {
+      background: #fff;
+      color: #000;
+      border: 2px solid #000;
+    }
+    .output-link {
+      display: block;
+      margin: 18px auto 0 auto;
+      text-align: center;
+      font-weight: bold;
+      color: #000;
+      text-decoration: underline;
+      font-size: 1.07em;
+    }
+    .footer-menu {
+      position: fixed;
+      left: 22px;
+      bottom: 20px;
+      z-index: 50;
+      background: transparent;
+    }
+    .footer-menu img {
+      width: 128px;
+      height: auto;
+      opacity: 1;
+      filter: grayscale(100%) contrast(1.1);
+      border-radius: 7px;
+      box-shadow: 0 2px 8px #0002;
+    }
+    @media (max-width: 1000px) {
+      .tiles-row {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .tile-card {
+        width: 44vw;
+        min-width: 120px;
+        max-width: 220px;
+      }
+    }
+    @media (max-width: 700px) {
+      .tiles-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      .tile-card {
+        width: 98vw;
+        min-width: 80px;
+        max-width: 240px;
+      }
+      .header {
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo" title="LaptopWorks">💻</div>
+    <span class="app-name">LaptopWorks</span>
+  </div>
+  <div class="instructions">
+    Upload documents into the relevant tiles below. Select gates to generate outputs.<br>
+    Minimum 1 document required in any tile.
+  </div>
+  <div class="container">
+    <form id="lw-form">
+      <div class="gates-row" style="justify-content:center; display:flex;">
+        <label>
+          <input type="checkbox" name="gate1" checked>
+          Gate 1
+        </label>
+        <label>
+          <input type="checkbox" name="gate2">
+          Gate 2
+        </label>
+        <label>
+          <input type="checkbox" name="gate3">
+          Gate 3
+        </label>
+        <label>
+          <input type="checkbox" name="gate4">
+          Gate 4
+        </label>
+        <label>
+          <input type="checkbox" name="gate5">
+          Gate 5
+        </label>
+      </div>
+      <div class="tiles-row">
+        <!-- Five Tiles -->
+        <div class="tile-card" data-archetype="AOR Paper">
+          <div class="tile-subtitle">Governance</div>
+          <div class="tile-title">AOR Paper</div>
+          <span class="tile-info" title="More info">i</span>
+          <ul class="files-list" id="files-list-1"></ul>
+          <div class="upload-area" id="upload-area-1">
+            <span>&#8682;</span> Drag/drop/browse docs
+            <input type="file" multiple style="display:none;" id="file-input-1" />
+          </div>
+        </div>
+        <div class="tile-card" data-archetype="System Assessment">
+          <div class="tile-subtitle">Governance</div>
+          <div class="tile-title">System Assessment</div>
+          <span class="tile-info" title="More info">i</span>
+          <ul class="files-list" id="files-list-2"></ul>
+          <div class="upload-area" id="upload-area-2">
+            <span>&#8682;</span> Drag/drop/browse docs
+            <input type="file" multiple style="display:none;" id="file-input-2" />
+          </div>
+        </div>
+        <div class="tile-card" data-archetype="Technical Annex">
+          <div class="tile-subtitle">Governance</div>
+          <div class="tile-title">Technical Annex</div>
+          <span class="tile-info" title="More info">i</span>
+          <ul class="files-list" id="files-list-3"></ul>
+          <div class="upload-area" id="upload-area-3">
+            <span>&#8682;</span> Drag/drop/browse docs
+            <input type="file" multiple style="display:none;" id="file-input-3" />
+          </div>
+        </div>
+        <div class="tile-card" data-archetype="Risk Register">
+          <div class="tile-subtitle">Governance</div>
+          <div class="tile-title">Risk Register</div>
+          <span class="tile-info" title="More info">i</span>
+          <ul class="files-list" id="files-list-4"></ul>
+          <div class="upload-area" id="upload-area-4">
+            <span>&#8682;</span> Drag/drop/browse docs
+            <input type="file" multiple style="display:none;" id="file-input-4" />
+          </div>
+        </div>
+        <div class="tile-card" data-archetype="Implementation Plan">
+          <div class="tile-subtitle">Governance</div>
+          <div class="tile-title">Implementation Plan</div>
+          <span class="tile-info" title="More info">i</span>
+          <ul class="files-list" id="files-list-5"></ul>
+          <div class="upload-area" id="upload-area-5">
+            <span>&#8682;</span> Drag/drop/browse docs
+            <input type="file" multiple style="display:none;" id="file-input-5" />
+          </div>
+        </div>
+      </div>
+      <button class="submit-btn" type="submit">Generate Output</button>
+    </form>
+    <a id="output-link" class="output-link" style="display:none;">Download Output</a>
+  </div>
+  <div class="footer-menu">
+    <img src="menu.png" alt="Menu">
+  </div>
+  <script>
+    // Manage files per tile
+    const filesByTile = [[], [], [], [], []];
+    const fileLists = [
+      document.getElementById('files-list-1'),
+      document.getElementById('files-list-2'),
+      document.getElementById('files-list-3'),
+      document.getElementById('files-list-4'),
+      document.getElementById('files-list-5')
+    ];
+
+    // Update file display for each tile
+    function updateFileList(tileIdx) {
+      const ul = fileLists[tileIdx];
+      ul.innerHTML = '';
+      filesByTile[tileIdx].forEach((file, idx) => {
+        const li = document.createElement('li');
+        const delBtn = document.createElement('button');
+        delBtn.className = 'del-btn';
+        delBtn.innerHTML = '🗑️';
+        delBtn.title = "Delete";
+        delBtn.onclick = () => {
+          filesByTile[tileIdx].splice(idx, 1);
+          updateFileList(tileIdx);
+        };
+        li.appendChild(delBtn);
+        li.appendChild(document.createTextNode(file.name));
+        ul.appendChild(li);
+      });
+    }
+
+    // Handle upload (drag/drop and file selection)
+    [1,2,3,4,5].forEach(tileNum => {
+      const uploadArea = document.getElementById('upload-area-'+tileNum);
+      const fileInput = document.getElementById('file-input-'+tileNum);
+
+      uploadArea.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', e => {
+        for (let file of e.target.files) {
+          filesByTile[tileNum-1].push(file);
+        }
+        updateFileList(tileNum-1);
+        fileInput.value = '';
+      });
+
+      // Drag-and-drop events
+      uploadArea.addEventListener('dragover', e => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+      uploadArea.addEventListener('dragleave', e => {
+        uploadArea.classList.remove('dragover');
+      });
+      uploadArea.addEventListener('drop', e => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        for (let file of e.dataTransfer.files) {
+          filesByTile[tileNum-1].push(file);
+        }
+        updateFileList(tileNum-1);
+      });
+    });
+
+    // Form submission
+    const form = document.getElementById('lw-form');
+    const outputLink = document.getElementById('output-link');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      // Gates selected
+      const gates = [];
+      for (let i = 1; i <= 5; ++i) {
+        if (form.querySelector('input[name="gate'+i+'"]').checked) gates.push("Gate " + i);
+      }
+      if (gates.length === 0) {
+        alert("Please select at least one gate.");
+        return;
+      }
+      // At least one file anywhere
+      const totalFiles = filesByTile.reduce((sum, arr) => sum + arr.length, 0);
+      if (totalFiles === 0) {
+        alert("Please upload at least one document.");
+        return;
+      }
+
+      // Prepare output summary
+      const tileNames = [
+        "AOR Paper", "System Assessment", "Technical Annex",
+        "Risk Register", "Implementation Plan"
+      ];
+      let output = `LaptopWorks Output\nSelected Gates: ${gates.join(", ")}\n\nUploaded Documents:\n`;
+      tileNames.forEach((name, idx) => {
+        if (filesByTile[idx].length) {
+          output += `\n${name}:\n`;
+          filesByTile[idx].forEach(file => {
+            output += `  - ${file.name}\n`;
+          });
+        }
+      });
+      output += `\n---\nThis is a generated summary for ${gates.join(", ")}.\n`;
+
+      // Download output
+      const blob = new Blob([output], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      outputLink.href = url;
+      outputLink.download = `LaptopWorks_output.txt`;
+      outputLink.style.display = "block";
+      outputLink.textContent = "Download Output";
+    });
+  </script>
+</body>
+</html>
